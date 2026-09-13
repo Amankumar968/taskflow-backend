@@ -95,10 +95,25 @@
 
 
 
+		<!--
+			Excluding google-http-client-apache-v2: this Apache-HttpClient-based
+			transport double-decompresses gzip responses when Firebase Admin SDK
+			fetches Google's public key certificates, causing:
+			"Error while fetching public key certificates: Not in GZIP format"
+			Excluding it forces google-api-client/firebase-admin to fall back to
+			the default NetHttpTransport (JDK's built-in HTTP client), which does
+			not have this double-decompression bug.
+		-->
 		<dependency>
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
 			<version>2.7.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.http-client</groupId>
+					<artifactId>google-http-client-apache-v2</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -110,13 +125,14 @@
 			<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-admin</artifactId>
 			<version>9.4.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.http-client</groupId>
+					<artifactId>google-http-client-apache-v2</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
